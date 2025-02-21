@@ -1,13 +1,12 @@
 package ee.aleksandra.veebipood.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.DuplicateFormatFlagsException;
 
 //Nibernate
 //automaatselt tekkin andmebaasi tabeli mis on klassi nimega
@@ -38,6 +37,15 @@ public class Product {
     private String image; //.jpg
     private boolean active;
 
+    //@many to many
+    //@manytoone
+    //@onetomany
+    //@onetoone
+
+    //OneToOne ---> User <-> Contact
+
+    @ManyToOne
+    private Category category;
    // public void setPrice(double price) {}
 
 }
