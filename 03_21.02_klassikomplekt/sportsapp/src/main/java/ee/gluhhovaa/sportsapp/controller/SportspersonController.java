@@ -20,7 +20,7 @@ public class SportspersonController {
         return sportspersonRepository.findAll(); // SELECT * FROM sportspersons
     }
 
-    @PostMapping
+    @PostMapping("sportspersons")
     public List<Sportsperson> addSportsperson(@RequestBody Sportsperson sportsperson) {
         if (sportsperson.getId() != null) {
             throw new RuntimeException("ERROR_CANNOT_ADD_WITH_ID");
@@ -38,7 +38,7 @@ public class SportspersonController {
         return sportspersonRepository.findAll();
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("sportspersons/{id}")
     public List<Sportsperson> deleteSportsperson(@PathVariable Long id) {
         if (!sportspersonRepository.existsById(id)) {
             throw new RuntimeException("ERROR_SPORTSPERSON_NOT_FOUND");
@@ -46,7 +46,7 @@ public class SportspersonController {
         sportspersonRepository.deleteById(id);
         return sportspersonRepository.findAll();
     }
-    @PutMapping("sportspersons")
+    @PutMapping("sportspersons") // Sportlase andmete muutmine (PUT localhost:8080/sportspersons)
     public List<Sportsperson> editSportsperson(@RequestBody Sportsperson sportsperson) {
         if (sportsperson.getId() == null) {
             throw new RuntimeException("ERROR_CANNOT_EDIT_WITHOUT_ID");
@@ -67,7 +67,7 @@ public class SportspersonController {
     public Sportsperson getSportspersonById(@PathVariable Long id) {
         return sportspersonRepository.findById(id).orElseThrow();
     }
-    @PatchMapping("sportspersons")
+    @PatchMapping("sportspersons") // Muuda  ainult ühte sportlase väljakut (PATCH localhost:8080/sportspersons)
     public List<Sportsperson> editSportspersonField(@RequestParam Long id, @RequestParam String field, @RequestParam String value) {
         if (id == null) {
             throw new RuntimeException("ERROR_CANNOT_EDIT_WITHOUT_ID");
@@ -98,6 +98,16 @@ public class SportspersonController {
         }
 
         sportspersonRepository.save(sportsperson);
+        return sportspersonRepository.findAll();
+    }
+    @GetMapping("sportspersons/{id}/totalpoints")  // võtta sportlase punktide kogusumma (GET localhost:8080/sportspersons/{id}/totalpoints)
+    public int getTotalPoints(@PathVariable Long id) {
+        Sportsperson sportsperson = sportspersonRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("ERROR_SPORTSPERSON_NOT_FOUND"));
+        return sportsperson.getTotalPoints();
+    }
+    @GetMapping("sportspersons/with-points") // võtta kõik sportlased oma punktidega (GET localhost:8080/sportspersons/with-points)
+    public List<Sportsperson> getAllSportspersonsWithPoints() {
         return sportspersonRepository.findAll();
     }
 }

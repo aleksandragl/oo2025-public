@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "sportspersons")
 @Getter
@@ -21,4 +24,13 @@ public class Sportsperson {
     private String name;
     private String country;
     private int age;
+
+    @OneToMany(mappedBy = "sportsperson", cascade = CascadeType.ALL)
+    private List<Result> results = new ArrayList<>(); // Sportlase tulemuste loetelu, initsialiseeritud tühja nimekirjaga,kasutasin seda sest tekkis viga ja sellega ei teki viga *NullPointerException
+    //private List<Result> results;
+
+    public int getTotalPoints() {
+        return results.stream().mapToInt(Result::getPoints).sum(); // Sportlase kõigi punktide summa
+    }
+
 }

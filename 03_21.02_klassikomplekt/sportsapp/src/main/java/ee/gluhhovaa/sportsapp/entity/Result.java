@@ -1,5 +1,6 @@
 package ee.gluhhovaa.sportsapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,7 +16,13 @@ public class Result {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String event;  // nimetus
+    private String event;  // nimetus (100m,400m jne)
     private double value;  // result
     private int points;    // punkte
+
+    @ManyToOne
+    @JoinColumn(name = "sportsperson_id", referencedColumnName = "id", nullable = false)
+    @JsonIgnore
+    private Sportsperson sportsperson; //tekkis viga  sportsperson_id loomisega,siis kirjutasin nagu siin (referencedColumnName = "id")et määrata võõrvõtme viidatud tabelis konkreetsele veerule.
+
 }
