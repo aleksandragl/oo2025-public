@@ -15,12 +15,12 @@ public class SportspersonController {
     SportspersonRepository sportspersonRepository;
 
     // localhost:8080/sportspersons
-    @GetMapping("sportspersons")
+    @GetMapping("sportspersons") // kõik sportlased
     public List<Sportsperson> getAllSportspersons() {
         return sportspersonRepository.findAll(); // SELECT * FROM sportspersons
     }
 
-    @PostMapping("sportspersons")
+    @PostMapping("sportspersons") // lisa uus sportlane ( kontrollib andmeid)
     public List<Sportsperson> addSportsperson(@RequestBody Sportsperson sportsperson) {
         if (sportsperson.getId() != null) {
             throw new RuntimeException("ERROR_CANNOT_ADD_WITH_ID");
@@ -38,7 +38,7 @@ public class SportspersonController {
         return sportspersonRepository.findAll();
     }
 
-    @DeleteMapping("sportspersons/{id}")
+    @DeleteMapping("sportspersons/{id}") //kustuta sportlane
     public List<Sportsperson> deleteSportsperson(@PathVariable Long id) {
         if (!sportspersonRepository.existsById(id)) {
             throw new RuntimeException("ERROR_SPORTSPERSON_NOT_FOUND");

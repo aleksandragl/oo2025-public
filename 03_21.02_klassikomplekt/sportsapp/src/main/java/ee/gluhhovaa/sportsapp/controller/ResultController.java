@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 @RestController
-@RequestMapping("/results")
 
 public class ResultController {
 
@@ -23,13 +22,13 @@ public class ResultController {
     @Autowired
     private SportspersonRepository sportspersonRepository;
 
-    @GetMapping
+    @GetMapping("/results")
     public List<Result> getAll() {
         return resultRepository.findAll();
     }
 
 
-    @PostMapping
+    @PostMapping("/results")
     public Result addResult(@RequestParam Long sportspersonId, @RequestBody Result result) {
         if (result.getEvent() == null || result.getEvent().isEmpty()) {
             throw new RuntimeException("ERROR_EVENT_CANNOT_BE_EMPTY");
@@ -55,13 +54,13 @@ public class ResultController {
     private void updateTotalPoints(Sportsperson sportsperson) {
         sportspersonRepository.save(sportsperson);
     }
-    @DeleteMapping("results/{id}")
+    @DeleteMapping("/results/{id}")
     public List<Result> deleteResult(@PathVariable Long id) {
         resultRepository.deleteById(id);
         return resultRepository.findAll();
 
     }
-    @PutMapping("results")
+    @PutMapping("/results")
     public List<Result> editResult(@RequestBody Result result) {
         if (result.getId() == null) {
             throw new RuntimeException("ERROR_CANNOT_EDIT_WITHOUT_ID");
@@ -76,7 +75,7 @@ public class ResultController {
         resultRepository.save(result);
         return resultRepository.findAll();
     }
-    @PatchMapping("results") //http://localhost:8080/results/results?id=1&field=value&value=11.5 näide
+    @PatchMapping("/results") //http://localhost:8080/results/results?id=1&field=value&value=11.5 näide
     public List<Result> editResultField(@RequestParam Long id, @RequestParam String field, @RequestParam String value) {
         if (id == null) {
             throw new RuntimeException("ERROR_CANNOT_EDIT_WITHOUT_ID");
@@ -104,7 +103,7 @@ public class ResultController {
         resultRepository.save(result);
         return resultRepository.findAll();
     }
-    @GetMapping("/by-sportsperson/{sportspersonId}")
+    @GetMapping("/results/by-sportsperson/{sportspersonId}")
     public List<Result> getResultsBySportsperson(@PathVariable Long sportspersonId) {
         if (!sportspersonRepository.existsById(sportspersonId)) {
             throw new RuntimeException("ERROR_SPORTSPERSON_NOT_FOUND");
