@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "numbers")
+@Table(name = "numbers")  //määrab andmebaasi tabeli
 @Getter
 @Setter
 @NoArgsConstructor

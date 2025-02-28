@@ -53,7 +53,7 @@ public class NumberController {
     public int getMax() {
         List<NumberEntity> numbers = numberRepository.findAll();
 
-        if (numbers.isEmpty()) return 0; // Проверяем, есть ли числа
+        if (numbers.isEmpty()) return 0; // kontrollime kas on olemas numbrid
 
         int max = numbers.get(0).getValue(); // eeldame, et esimene number on suurim
         for (NumberEntity num : numbers) {
@@ -64,7 +64,7 @@ public class NumberController {
 
         return max;
     }
-    @GetMapping("/movingaverage") //otspunkt andmebaasis olevate arvude libiseva keskmise leidmiseks.
+    @GetMapping("/movingaverage") //otspunkt andmebaasis olevate arvude libiseva keskmise leidmiseks
     public List<Double> getMovingAverage() {
         List<NumberEntity> numbers = numberRepository.findAll(); //võtame kõik numbrid
 
