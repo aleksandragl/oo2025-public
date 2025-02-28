@@ -22,6 +22,10 @@ public class NumberController {
     }
     @PostMapping("/add") // numbride lisamiseks andmebaasi
     public NumberEntity addNumber(@RequestBody NumberEntity number) {
+        if (number.getValue() <= 0) {
+            throw new RuntimeException("ERROR_NUMBER_MUST_BE_POSITIVE");
+        }
+
         return numberRepository.save(number);
     }
 
@@ -68,7 +72,9 @@ public class NumberController {
     public List<Double> getMovingAverage() {
         List<NumberEntity> numbers = numberRepository.findAll(); //võtame kõik numbrid
 
-        if (numbers.size() < 3) return List.of();
+        if (numbers.size() < 3) {
+            throw new RuntimeException("ERROR_NOT_ENOUGH_NUMBERS_FOR_MOVING_AVERAGE");
+        }
 
         List<Double> movingAverages = new ArrayList<>();
 
