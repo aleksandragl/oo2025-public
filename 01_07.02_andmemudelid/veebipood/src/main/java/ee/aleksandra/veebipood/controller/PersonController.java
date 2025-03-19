@@ -5,12 +5,14 @@ package ee.aleksandra.veebipood.controller;
 import ee.aleksandra.veebipood.entity.Person;
 import ee.aleksandra.veebipood.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 public class PersonController {
 
