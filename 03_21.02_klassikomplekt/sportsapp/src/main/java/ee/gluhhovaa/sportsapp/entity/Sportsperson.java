@@ -1,5 +1,6 @@
 package ee.gluhhovaa.sportsapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,6 +27,7 @@ public class Sportsperson {
     private int age;
 
     @OneToMany(mappedBy = "sportsperson", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Result> results = new ArrayList<>(); // Sportlase tulemuste loetelu, initsialiseeritud tühja nimekirjaga,kasutasin seda sest tekkis viga ja sellega ei teki viga *NullPointerException
     //private List<Result> results;
 

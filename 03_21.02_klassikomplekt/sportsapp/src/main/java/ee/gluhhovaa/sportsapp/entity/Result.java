@@ -1,6 +1,8 @@
 package ee.gluhhovaa.sportsapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,7 +24,7 @@ public class Result {
 
     @ManyToOne
     @JoinColumn(name = "sportsperson_id", referencedColumnName = "id", nullable = false)
-    @JsonIgnore
+    @JsonIgnoreProperties("results")
     private Sportsperson sportsperson; //tekkis viga  sportsperson_id loomisega,siis kirjutasin nagu siin (referencedColumnName = "id")et määrata võõrvõtme viidatud tabelis konkreetsele veerule.
 
 }
