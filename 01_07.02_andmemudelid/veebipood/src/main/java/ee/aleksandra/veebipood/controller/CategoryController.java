@@ -15,12 +15,12 @@ public class CategoryController {
 
 
     @GetMapping("categories")
-    public List<Category> getProducts() {
+    public List<Category>addCategory() {
         return categoryRepository.findAll(); // [] -> SELECT * FROM extends JpaRepository<Product>
     }
 
     @PostMapping("categories")
-    public List<Category> addProduct(@RequestBody Category category) {
+    public List<Category> addCategory(@RequestBody Category category) {
         if (category.getId() != null) {
             throw new RuntimeException("ERROR_CANNOT_ADD_WITH_ID");
         }
@@ -29,7 +29,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("categories/{id}")
-    public List<Category> deleteProduct(@PathVariable Long id) {
+    public List<Category> deleteCategory(@PathVariable Long id) {
         categoryRepository.deleteById(id);
         return categoryRepository.findAll();
     }

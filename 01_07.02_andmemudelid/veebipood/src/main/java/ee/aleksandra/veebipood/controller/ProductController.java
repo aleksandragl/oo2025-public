@@ -3,8 +3,12 @@ package ee.aleksandra.veebipood.controller;
 import ee.aleksandra.veebipood.entity.Product;
 import ee.aleksandra.veebipood.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:5173")
@@ -57,13 +61,13 @@ public class ProductController {
     // kui on 1 on ilusam kasutada @PathVariable
     //kui on 2 või enam parameetrit peaks kasutama RequestParam
     //localhost:8080/products/4/name/Aura
-    @PatchMapping("products") //PATCH localhost:8080/products?id=4&field=name&value=Aura
+    @PatchMapping("products") // PATCH localhost:8080/products?id=4&field=name&value=Aura
     public List<Product> editProductValue(@RequestParam Long id, String field, String value) {
         if (id == null) {
             throw new RuntimeException("ERROR_CANNOT_EDIT_WITHOUT_ID");
         }
         Product product = productRepository.findById(id).orElseThrow();
-        switch(field) {
+        switch (field) {
             case "name" -> product.setName(value);
             case "price" -> {
                 if (Double.parseDouble(value) <= 0) {
@@ -87,7 +91,29 @@ public class ProductController {
         productRepository.save(product);
         return productRepository.findAll();
     }
+//    @GetMapping("/category-products")
+//    public List<Product> getCategoryProducts(@RequestParam Long categoryId) {
+//        List<Product> product = productRepository.findAll();
+//        List<Product> filteredProduct = new ArrayList<>(); //tühi List
+//        for (int i = 0; i < products.size() ; i++) {
+//
+//        }
+//        for (Product p : product) {
+//            if (p.getCategory().getId().equals(categoryId)) {
+//                filteredProduct.add(p);
+//            }
+//        }
+//        return filteredProduct;
+//    }
+    @GetMapping("/category-products")
+    public Page<Product> getCategoryProducts(@RequestParam Long categoryId, Pageable pageable) {
+        if (categoryId == -1) {
+            return productRepository.findAll(pageable); // returniga funktsioon lõppeb, else blokki pole vaja
+        }
+        return productRepository.findByCategory_Id(categoryId, pageable);
+    }
 }
+
 //1xx --> informatiivsed
 //2xx --> edukad 200  201(created)
 //3xx --> suunamine -meie ei kasuta

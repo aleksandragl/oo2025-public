@@ -1,64 +1,45 @@
-import { useEffect, useState } from 'react'
+
 //import reactLogo from './assets/react.svg'
 //import viteLogo from '/vite.svg'
-import './App.css'
-import { Category } from './models/Category';
-import { Product } from './models/Product';
+import "./App.css"
+import { Route, Routes } from "react-router-dom";
+import MainPage from './pages/MainPage';
+import ManageProducts from './pages/ManageProducts';
+import Arrayd from './pages/Arrayd';
+import Menu from './components/Menu';
+import ManageCategories from './pages/ManageCategories';
+import Cart from './pages/Cart';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import Orders from './pages/Orders';
 
 function App() {
-  //const [count, setCount] = useState(0)
-  const sonad = ["Elas", "metsas", "mutionu"];
-  const autod = [
-    {"mark": "BMW", "mudel": "i5", "year": 2015},
-    {"mark": "Audi", "mudel": "TT", "year": 2017},
-    {"mark": "Mersedes", "mudel": "S", "year": 2012},
-    {"mark": "VW", "mudel": "Golf", "year": 2013}
-  ];
-  //muutuja HTML muudad muutujat + HTMLi sulgudes ees on algvaartus
-  const [kategooriad, setKategooriad] = useState<Category[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
-  //uef enter ->onload function
-  useEffect(() => {
-    fetch("http://localhost:8080/categories") //api otspunkt kuhu laheb paring
-            .then(res=>res.json())
-            .then(json=> setKategooriad(json)) //body:sisu mida tagastab meie backend 
-  }, []);
-
-  useEffect(() => {
-    fetch("http://localhost:8080/products") //api otspunkt kuhu laheb paring
-            .then(res=>res.json())
-            .then(json=> setProducts(json)) //body:sisu mida tagastab meie backend 
-  }, []);
-
-  return (
+ 
+  return ( 
     <>
-      {/* <div>{7 + 7}</div>
-      <div>7 + 7</div>
-      <div>{kogus}</div>
-      <div>{count}</div> */}
-      {sonad.map(sona =>
-       <div key={sona}>
-        {sona}
-       </div> )}
-       <br />
-       <br />
-      {kategooriad.map(kategooria =>  
-       <div key={kategooria.id}>
-        {kategooria.name} {kategooria.active}
-       </div> )}
-       <br />
-       <br />
-      {products.map(product =>  
-       <div key={product.id}>
-        <div>{product.id}</div>
-        <div>{product.name}</div>
-        <div>{product.price}</div>
-        <div>{product.image}</div>
-        <div>{product.category?.name}</div>
-       {/* <div>{product.active}</div> */}
-       </div> )}
+      <Menu />
+    
+      <Routes>
+        <Route path="/" element={ <MainPage /> } />
+        <Route path="/admin/products" element={ <ManageProducts /> } />
+        <Route path="/admin/categories" element={ <ManageCategories /> } />
+
+        <Route path="/arrays" element={ <Arrayd /> } />
+        <Route path="/cart" element={ <Cart /> } />
+        <Route path="/login" element={ <Login /> } />
+        <Route path="/signup" element={ <Signup /> } />
+        <Route path="/orders" element={ <Orders /> } />
+
+        <Route path="/*" element={ <div>Page not found</div> } />
+      </Routes>
     </>
+    //kaib FOOTER 
   )
 }
+
+// key={}
+// React soovib koodi mällu jätta. Kui toimuvad re-renderdused, siis ta jätab kõik mällu v.a.
+// tsükli/array sisud, sest tal pole mingit aimu, mille järgi seda meelde jätta.
+// selle jaoks, et ta saaks array meelde jätta, lisame key={}
 
 export default App
