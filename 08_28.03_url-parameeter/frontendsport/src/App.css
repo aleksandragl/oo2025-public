@@ -9,11 +9,22 @@
   width: 100vw;
 }
 
-
-/* #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+table {
+  border: 1px solid black;
+  /* 
+    border-width: 1px;
+    border-style: solid;
+    border-color: black;
+  */
+  margin: auto; 
+  /* paneb automaatsed marginid. kui on määratletud height ja 
+  kui on määratletud width, siis ta paneb täpselt keskele.
+  height --> täpselt nii kõrge kui on tabel.
+  width --> täpselt keskele
+  */
 }
- */
+
+table img {
+  width: 50px;
+  height: 50px;
+}
