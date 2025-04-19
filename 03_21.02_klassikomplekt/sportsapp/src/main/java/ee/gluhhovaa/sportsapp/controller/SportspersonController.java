@@ -4,6 +4,8 @@ package ee.gluhhovaa.sportsapp.controller;
 import ee.gluhhovaa.sportsapp.entity.Sportsperson;
 import ee.gluhhovaa.sportsapp.repository.SportspersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -110,5 +112,12 @@ public class SportspersonController {
     @GetMapping("sportspersons/with-points") // võtta kõik sportlased oma punktidega (GET localhost:8080/sportspersons/with-points)
     public List<Sportsperson> getAllSportspersonsWithPoints() {
         return sportspersonRepository.findAll();
+    }
+    @GetMapping("sportspersons/by-country")
+    public Page<Sportsperson> getSportspersonsByCountry(@RequestParam String country, Pageable pageable) {
+        if (country.equalsIgnoreCase("all")) {
+            return sportspersonRepository.findAll(pageable);
+        }
+        return sportspersonRepository.findByCountry(country, pageable);
     }
 }
