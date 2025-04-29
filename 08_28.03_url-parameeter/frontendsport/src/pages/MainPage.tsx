@@ -13,22 +13,18 @@ function MainPage() {
 
   useEffect(() => {
     fetch("http://localhost:8080/sportspersons/by-country?country=all&page=0&size=1000")
-      .then(res =>
-        res.json() as Promise<{
-          content: Sportsperson[];
-          totalElements: number;
-          totalPages: number;
-        }>
-      )
-      .then(json => {
-        setSportspersons(json.content);
-        setTotalSportspersons(json.totalElements);
-        setTotalPages(json.totalPages);
-        const uniq = Array.from(
-          new Set(json.content.map(sp => sp.country))
-        );
-        setCountries(uniq);
-      });
+  .then(res => res.json())
+  .then((json: {
+    content: Sportsperson[];
+    totalElements: number;
+    totalPages: number;
+  }) => {
+    setSportspersons(json.content);
+    setTotalSportspersons(json.totalElements);
+    setTotalPages(json.totalPages);
+    const uniq = Array.from(new Set(json.content.map(sp => sp.country)));
+    setCountries(uniq);
+  });
   }, []);
   
   const showByCountry = useCallback((country: string, currentPage: number) => {

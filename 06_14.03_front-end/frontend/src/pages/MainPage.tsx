@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import '../App.css'
 import { Category } from '../models/Category';
 import { Product } from '../models/Product';
+import { Link } from 'react-router-dom';
 
 function MainPage() {
 
@@ -13,6 +14,10 @@ function MainPage() {
   const [productsByPage, setProductsByPage ] = useState(1);
   const [page, setPage] = useState(0);
   const [activeCategory, setActiveCategory] = useState(-1);
+  const productsByPageRef = useRef<HTMLSelectElement>(null); //HTML inputiga/selectiga sidumiseks
+  const [sort, setSort] = useState("id,asc");
+
+
 
   //uef enter ->onload function
   useEffect(() => {
@@ -29,7 +34,8 @@ function MainPage() {
     setPage(currentPage);
     fetch("http://localhost:8080/category-products?categoryId=" + categoryId + 
       "&size=" + productsByPage +
-      "&page=" + currentPage // currentPage, sest React update-b useState setterid fnkts-de lõpus
+      "&page=" + currentPage + // currentPage, sest React update-b useState setterid fnkts-de lõpus
+      "&sort=" + sort
     )
         .then(res=>res.json()) 
         .then(json=> {
@@ -37,21 +43,31 @@ function MainPage() {
           setTotalProducts(json.totalElements);
           setTotalPages(json.totalPages);
         }) // mida set'n see muutub HTML-s
-  }, [productsByPage])  
+  }, [productsByPage, sort])  
 
   useEffect(() => {
-    showByCategory(-1, 0);
-  }, [showByCategory]);
+    showByCategory(activeCategory, 0);
+  }, [showByCategory, activeCategory]);
 
 
   function updatePage(newPage: number) {
     showByCategory(activeCategory, newPage);
   }
 
-const productsByPageRef = useRef<HTMLSelectElement>(null); //HTML inputiga/selectiga sidumiseks
+
+
+
   
-  return (
+                                          return (
     <div>
+      <button onClick={() => setSort("id,asc")}>Sorteeri vanemad enne</button>
+      <button onClick={() => setSort("id,desc")}>Sorteeri uuemad enne</button>
+      <button onClick={() => setSort("name,asc")}>Sorteeri A-Z</button>
+      <button onClick={() => setSort("name,desc")}>Sorteeri Z-A</button>
+      <button onClick={() => setSort("price,asc")}>Sorteeri odavamad enne</button>
+      <button onClick={() => setSort("price,desc")}>Sorteeri kallimad enne</button>
+
+
       <select ref={productsByPageRef}
               onChange={() => setProductsByPage(Number(productsByPageRef.current?.value))}>
         <option>1</option>
@@ -73,6 +89,9 @@ const productsByPageRef = useRef<HTMLSelectElement>(null); //HTML inputiga/selec
         <div>{product.price}</div>
         <div>{product.image}</div>
         <div>{product.category?.name}</div>
+        <Link to={"/product/" + product.id}>
+        <button>Vt lähemalt</button>
+        </Link>
         {/* <div>{product.active}</div> */}
       </div> )}
       <button disabled={page === 0} onClick={() => updatePage(page - 1)}>Eelmine</button>
