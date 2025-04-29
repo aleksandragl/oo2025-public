@@ -9,89 +9,95 @@ function ManageResults() {
 
   const eventRef = useRef<HTMLInputElement>(null);
   const valueRef = useRef<HTMLInputElement>(null);
-  const pointsRef = useRef<HTMLInputElement>(null);
   const sportspersonRef = useRef<HTMLSelectElement>(null);
 
-  // Fetch Results
-  useEffect(() => {
+  const loadResults = () => {
     fetch("http://localhost:8080/results")
-      .then((res) => res.json())
-      .then((json) => setResults(json));
-  }, []);
-
-  // Fetch Sportspersons (for dropdown)
-  useEffect(() => {
-    fetch("http://localhost:8080/sportspersons")
-      .then((res) => res.json())
-      .then((json) => setSportspersons(json));
-  }, []);
-
-  // Delete Result
-  const deleteResult = (id: number) => {
-    fetch(`http://localhost:8080/results/${id}`, {
-      method: "DELETE",
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        if (json.message === undefined) {
-          setResults(json);
-          toast.success("Tulemus kustutatud!");
-        } else {
-          toast.error(json.message);
-        }
-      });
+      .then(res => res.json())
+      .then(json => {
+        if (Array.isArray(json)) setResults(json);
+      })
+      .catch(() => toast.error("Failed to load results"));
   };
 
-  // Add Result
-  const addResult = () => {
-    const newResult = {
-      event: eventRef.current?.value,
-      value: Number(valueRef.current?.value),
-      points: Number(pointsRef.current?.value),
-      sportspersonId: Number(sportspersonRef.current?.value),
-    };
+  const loadSportspersons = () => {
+    fetch("http://localhost:8080/sportspersons/with-points")
+      .then(res => res.json())
+      .then(json => {
+        if (Array.isArray(json)) setSportspersons(json);
+      })
+      .catch(() => toast.error("Failed to load sportspersons"));
+  };
 
-    fetch("http://localhost:8080/results", {
-      method: "POST",
-      body: JSON.stringify(newResult),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        if (json.message === undefined) {
-          setResults(json);
-          toast.success("Tulemus lisatud!");
-          if (eventRef.current) eventRef.current.value = "";
-          if (valueRef.current) valueRef.current.value = "";
-          if (pointsRef.current) pointsRef.current.value = "";
-          if (sportspersonRef.current) sportspersonRef.current.value = "";
-        } else {
-          toast.error(json.message);
+  useEffect(() => {
+    loadResults();
+    loadSportspersons();
+  }, []);
+
+  const deleteResult = (id: number) => {
+    fetch(`http://localhost:8080/results/${id}`, { method: "DELETE" })
+      .then(async res => {
+        const json = await res.json();
+        if (!res.ok) {
+          toast.error(json.message || "Delete failed");
+          return;
         }
-      });
+        if (Array.isArray(json)) {
+          setResults(json);
+          loadSportspersons();
+          toast.success("Deleted");
+        }
+      })
+      .catch(() => toast.error("Network error"));
+  };
+
+  const addResult = () => {
+    const event = eventRef.current?.value ?? "";
+    const value = Number(valueRef.current?.value);
+    const spId = Number(sportspersonRef.current?.value);
+
+    if (!event || value <= 0 || !spId) {
+      toast.error("Please fill in all fields correctly");
+      return;
+    }
+
+    fetch(`http://localhost:8080/results?sportspersonId=${spId}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ event, value }), // 
+    })
+      .then(async res => {
+        const json = await res.json();
+        if (!res.ok) {
+          toast.error(json.message || "Add failed");
+          return;
+        }
+        setResults(prev => [...prev, json as Result]);
+        loadSportspersons();
+        toast.success("Added");
+
+        // clear fields
+        if (eventRef.current) eventRef.current.value = "";
+        if (valueRef.current) valueRef.current.value = "";
+        if (sportspersonRef.current) sportspersonRef.current.value = "";
+      })
+      .catch(() => toast.error("Network error"));
   };
 
   return (
     <div>
       <h2>Manage Results</h2>
-      <label>Event</label> <br />
-      <input ref={eventRef} type="text" /> <br />
-      <label>Value</label> <br />
-      <input ref={valueRef} type="number" step="0.01" /> <br />
-      <label>Points</label> <br />
-      <input ref={pointsRef} type="number" /> <br />
-      <label>Sportsperson</label> <br />
+      <label>Event</label><br />
+      <input ref={eventRef} type="text" /><br />
+      <label>Value</label><br />
+      <input ref={valueRef} type="number" step="0.01" /><br />
+      <label>Sportsperson</label><br />
       <select ref={sportspersonRef}>
         <option value="">-- Select --</option>
-        {sportspersons.map((sp) => (
-          <option key={sp.id} value={sp.id}>
-            {sp.name}
-          </option>
+        {sportspersons.map(sp => (
+          <option key={sp.id} value={sp.id}>{sp.name}</option>
         ))}
-      </select>
-      <br />
+      </select><br />
       <button onClick={addResult}>Add</button>
 
       <table>
@@ -102,22 +108,30 @@ function ManageResults() {
             <th>Value</th>
             <th>Points</th>
             <th>Sportsperson</th>
+            <th>Total Points</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          {results.map((result) => (
-            <tr key={result.id}>
-              <td>{result.id}</td>
-              <td>{result.event}</td>
-              <td>{result.value}</td>
-              <td>{result.points}</td>
-              <td>{result.sportsperson?.name || "N/A"}</td>
-              <td>
-                <button onClick={() => deleteResult(result.id)}>Delete</button>
-              </td>
-            </tr>
-          ))}
+          {results.length > 0 ? results.map(r => {
+            const sportsperson = sportspersons.find(sp => sp.id === r.sportsperson?.id);
+            return (
+              <tr key={r.id}>
+                <td>{r.id}</td>
+                <td>{r.event}</td>
+                <td>{r.value}</td>
+                <td>{r.points}</td>
+                <td>{r.sportsperson?.name ?? "N/A"}</td>
+                <td>{sportsperson?.totalPoints ?? "—"}</td>
+
+                <td>
+                  <button onClick={() => deleteResult(r.id)}>Delete</button>
+                </td>
+              </tr>
+            );
+          }) : (
+            <tr><td colSpan={7}>No results</td></tr>
+          )}
         </tbody>
       </table>
 

@@ -22,9 +22,10 @@ public class Result {
     private double value;  // result
     private int points;    // punkte
 
-    @ManyToOne
-    @JoinColumn(name = "sportsperson_id", referencedColumnName = "id", nullable = false)
-    @JsonIgnoreProperties("results")
+    @ManyToOne(fetch = FetchType.EAGER) //@ManyToOne
+    @JoinColumn(name = "sportsperson_id", nullable = false) //@JoinColumn(name = "sportsperson_id", referencedColumnName = "id", nullable = false)
+    @JsonIgnoreProperties("results") //@JsonBackReference //unspororted media type viga oli
+    //@JsonIgnoreProperties("results") //@JsonIgnoreProperties("results")
     private Sportsperson sportsperson; //tekkis viga  sportsperson_id loomisega,siis kirjutasin nagu siin (referencedColumnName = "id")et määrata võõrvõtme viidatud tabelis konkreetsele veerule.
 
 }

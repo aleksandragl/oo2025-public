@@ -27,7 +27,7 @@ public class Sportsperson {
     private int age;
 
     @OneToMany(mappedBy = "sportsperson", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    //@JsonManagedReference
     private List<Result> results = new ArrayList<>(); // Sportlase tulemuste loetelu, initsialiseeritud tühja nimekirjaga,kasutasin seda sest tekkis viga ja sellega ei teki viga *NullPointerException
     //private List<Result> results;
 

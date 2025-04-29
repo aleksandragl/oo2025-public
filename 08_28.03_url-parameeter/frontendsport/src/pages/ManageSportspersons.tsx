@@ -9,7 +9,6 @@ function ManageSportspersons() {
   const nameRef = useRef<HTMLInputElement>(null);
   const countryRef = useRef<HTMLInputElement>(null);
   const ageRef = useRef<HTMLInputElement>(null);
-  const pointsRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetch("http://localhost:8080/sportspersons")
@@ -36,7 +35,6 @@ function ManageSportspersons() {
       name: nameRef.current?.value,
       country: countryRef.current?.value,
       age: Number(ageRef.current?.value),
-      totalPoints: Number(pointsRef.current?.value || 0)
     };
 
     fetch("http://localhost:8080/sportspersons", {
@@ -50,11 +48,10 @@ function ManageSportspersons() {
         if (json.message === undefined && json.timestamp === undefined && json.status === undefined) {
           setSportspersons(json);
           toast.success("Sportsperson added!");
-          if (nameRef.current && countryRef.current && ageRef.current && pointsRef.current) {
+          if (nameRef.current && countryRef.current && ageRef.current) {
             nameRef.current.value = "";
             countryRef.current.value = "";
             ageRef.current.value = "";
-            pointsRef.current.value = "";
           }
         } else {
           toast.error(json.message);
@@ -71,8 +68,6 @@ function ManageSportspersons() {
       <input ref={countryRef} type="text" /><br />
       <label>Age</label><br />
       <input ref={ageRef} type="number" /><br />
-      <label>Total Points</label><br />
-      <input ref={pointsRef} type="number" /><br />
       <button onClick={addSportsperson}>Add</button>
 
       <table>
@@ -82,7 +77,7 @@ function ManageSportspersons() {
             <th>Name</th>
             <th>Country</th>
             <th>Age</th>
-            <th>Total Points</th>
+            {/* <th>Total Points</th> */}
             <th>Actions</th>
           </tr>
         </thead>
@@ -93,7 +88,7 @@ function ManageSportspersons() {
               <td>{s.name}</td>
               <td>{s.country}</td>
               <td>{s.age}</td>
-              <td>{s.totalPoints}</td>
+              {/* <td>{s.totalPoints}</td> */}
               <td>
                 <button onClick={() => deleteSportsperson(s.id)}>Delete</button>
               </td>
