@@ -5,6 +5,6 @@ export type Sportsperson = {
     name: string,
     country: string,
     age: number
-    results?: Result[];
-    totalPoints?: number;
+    results?: Result[];  //--> masiiv //kas on või ei ole üldse 
+    totalPoints?: number; //kas on või ei ole üldse 
 }

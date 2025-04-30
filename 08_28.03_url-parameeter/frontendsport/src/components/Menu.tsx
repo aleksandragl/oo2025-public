@@ -14,9 +14,9 @@ function Menu() {
             <Nav.Link as={Link} to="/sportspersons">Võistlejad</Nav.Link>
             <Nav.Link as={Link} to="/results">Tulemused</Nav.Link>
           </Nav>
-          <Nav>
+          {/* <Nav>
             <Nav.Link as={Link} to="/login">Sisselogimine</Nav.Link>
-          </Nav>
+          </Nav> */}
         </Navbar.Collapse>
       </Container>
     </Navbar>

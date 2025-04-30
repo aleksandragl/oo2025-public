@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Result } from "../models/Result";
 import { Sportsperson } from "../models/Sportsperson";
 import { ToastContainer, toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 function ManageResults() {
   const [results, setResults] = useState<Result[]>([]);
@@ -19,7 +20,7 @@ function ManageResults() {
       })
       .catch(() => toast.error("Failed to load results"));
   };
-
+  // lae sportlased kellel on arvutatud totalPoints
   const loadSportspersons = () => {
     fetch("http://localhost:8080/sportspersons/with-points")
       .then(res => res.json())
@@ -33,7 +34,7 @@ function ManageResults() {
     loadResults();
     loadSportspersons();
   }, []);
-
+  //kustutame tulemus ID järgi
   const deleteResult = (id: number) => {
     fetch(`http://localhost:8080/results/${id}`, { method: "DELETE" })
       .then(async res => {
@@ -50,11 +51,11 @@ function ManageResults() {
       })
       .catch(() => toast.error("Network error"));
   };
-
+  //lisame uus tulemus sportlasele
   const addResult = () => {
     const event = eventRef.current?.value ?? "";
     const value = Number(valueRef.current?.value);
-    const spId = Number(sportspersonRef.current?.value);
+    const spId = Number(sportspersonRef.current?.value); //spId sportspersonId
 
     if (!event || value <= 0 || !spId) {
       toast.error("Please fill in all fields correctly");
@@ -64,7 +65,7 @@ function ManageResults() {
     fetch(`http://localhost:8080/results?sportspersonId=${spId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ event, value }), // 
+      body: JSON.stringify({ event, value }),
     })
       .then(async res => {
         const json = await res.json();
@@ -87,6 +88,8 @@ function ManageResults() {
   return (
     <div>
       <h2>Manage Results</h2>
+      {/* Add Result Form */}
+      <h3>Add Result</h3>
       <label>Event</label><br />
       <input ref={eventRef} type="text" /><br />
       <label>Value</label><br />
@@ -100,6 +103,7 @@ function ManageResults() {
       </select><br />
       <button onClick={addResult}>Add</button>
 
+      {/* Results Table */}
       <table>
         <thead>
           <tr>
@@ -113,26 +117,28 @@ function ManageResults() {
           </tr>
         </thead>
         <tbody>
-          {results.length > 0 ? results.map(r => {
-            const sportsperson = sportspersons.find(sp => sp.id === r.sportsperson?.id);
-            return (
-              <tr key={r.id}>
-                <td>{r.id}</td>
-                <td>{r.event}</td>
-                <td>{r.value}</td>
-                <td>{r.points}</td>
-                <td>{r.sportsperson?.name ?? "N/A"}</td>
-                <td>{sportsperson?.totalPoints ?? "—"}</td>
-
-                <td>
-                  <button onClick={() => deleteResult(r.id)}>Delete</button>
-                </td>
-              </tr>
-            );
-          }) : (
-            <tr><td colSpan={7}>No results</td></tr>
-          )}
-        </tbody>
+        {results.length > 0 ? results.map(result => {
+          const sportsperson = sportspersons.find(sp => sp.id === result.sportsperson?.id);
+          return (
+            <tr key={result.id}>
+              <td>{result.id}</td>
+              <td>{result.event}</td>
+              <td>{result.value}</td>
+              <td>{result.points}</td>
+              <td>{result.sportsperson?.name ?? "N/A"}</td>
+              <td>{sportsperson?.totalPoints ?? "—"}</td>
+              <td>
+                <button onClick={() => deleteResult(result.id)}>Delete</button> 
+                <Link to={`/admin/edit-result/${result.id}`}>
+                  <button>Edit</button>
+                </Link>
+              </td>
+            </tr>
+          );
+        }) : (
+          <tr><td colSpan={7}>No results</td></tr>
+        )}
+      </tbody>
       </table>
 
       <ToastContainer />

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Sportsperson } from "../models/Sportsperson";
 import { ToastContainer, toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
 function ManageSportspersons() {
 
@@ -77,24 +78,26 @@ function ManageSportspersons() {
             <th>Name</th>
             <th>Country</th>
             <th>Age</th>
-            {/* <th>Total Points</th> */}
+            {/* <th>Total Points</th> sest see on olemas juba ManageResultis */ }
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {sportspersons.map(s => (
-            <tr key={s.id}>
-              <td>{s.id}</td>
-              <td>{s.name}</td>
-              <td>{s.country}</td>
-              <td>{s.age}</td>
-              {/* <td>{s.totalPoints}</td> */}
+          {sportspersons.map(sportsperson => (
+            <tr key={sportsperson.id}>
+              <td>{sportsperson.id}</td>
+              <td>{sportsperson.name}</td>
+              <td>{sportsperson.country}</td>
+              <td>{sportsperson.age}</td>
               <td>
-                <button onClick={() => deleteSportsperson(s.id)}>Delete</button>
+                <button onClick={() => deleteSportsperson(sportsperson.id)}>Delete</button>
+                <Link to={`/admin/edit-sportsperson/${sportsperson.id}`}>
+                  <button>Edit</button>
+                </Link>
               </td>
             </tr>
           ))}
-        </tbody>
+      </tbody>
       </table>
       <ToastContainer />
     </div>

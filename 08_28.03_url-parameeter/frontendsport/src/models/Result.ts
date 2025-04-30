@@ -5,5 +5,5 @@ export type Result = {
     event: string,
     value: number,
     points: number
-    sportsperson?: Sportsperson;
+    sportsperson?: Sportsperson; //kas on või ei ole üldse 
 }

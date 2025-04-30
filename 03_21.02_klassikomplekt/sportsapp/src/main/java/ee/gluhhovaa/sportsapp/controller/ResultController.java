@@ -112,6 +112,10 @@ public class ResultController {
             throw new RuntimeException("ERROR_SPORTSPERSON_NOT_FOUND");
         }
         return resultRepository.findBySportspersonId(sportspersonId);
+    }///uuuuus asi KONKRETNE RESULT ID JÄRGI
+    @GetMapping("/results/{id}")
+    public Result getResultById(@PathVariable Long id) {
+        return resultRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("ERROR_RESULT_NOT_FOUND"));
     }
-
 }
