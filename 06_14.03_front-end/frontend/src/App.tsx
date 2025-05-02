@@ -14,6 +14,7 @@ import Signup from './pages/Signup';
 import Orders from './pages/Orders';
 import SingleProduct from "./pages/SingleProduct";
 import EditProduct from "./pages/EditProduct";
+import Map from "./pages/Map";
 
 function App() {
  
@@ -33,6 +34,8 @@ function App() {
         <Route path="/signup" element={ <Signup /> } />
         <Route path="/orders" element={ <Orders /> } />
         <Route path="/product/:productId" element={ <SingleProduct /> } />
+        <Route path="/map" element={ <Map /> } />
+
         
 
         <Route path="/*" element={ <div>Page not found</div> } />

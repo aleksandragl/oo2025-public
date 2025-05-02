@@ -3,8 +3,11 @@ import '../App.css'
 import { Category } from '../models/Category';
 import { Product } from '../models/Product';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+
 
 function MainPage() {
+  const { t } = useTranslation();
 
   //muutuja HTML muudad muutujat + HTMLi sulgudes ees on algvaartus
   const [kategooriad, setKategooriad] = useState<Category[]>([]);
@@ -74,7 +77,7 @@ function MainPage() {
         <option>2</option>
         <option>3</option>
       </select>
-      <button onClick={() => showByCategory(-1, 0)}>Kõik kategooriad</button>
+      <button onClick={() => showByCategory(-1, 0)}>{t("home.all-categories")}</button>
       {kategooriad.map(kategooria => 
       <button key={kategooria.id} onClick={() => showByCategory(kategooria.id, 0)}>
         {kategooria.name}
